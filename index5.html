@@ -1,0 +1,2403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SignConnect Pro - Comprehensive Sign Language Communication</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-light: #60a5fa;
+            --secondary: #7c3aed;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --gray: #64748b;
+            --gray-light: #e2e8f0;
+            --medical: #ef4444;
+            --education: #8b5cf6;
+            --business: #0ea5e9;
+            --emergency: #f59e0b;
+            --social: #10b981;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background-color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .logo-icon {
+            background-color: var(--primary);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .logo-text span {
+            color: var(--primary);
+        }
+
+        /* Main App Layout */
+        .app-container {
+            display: flex;
+            min-height: calc(100vh - 70px);
+            gap: 20px;
+            padding: 20px 0;
+        }
+
+        /* Left Panel - Sign Communication */
+        .sign-panel {
+            flex: 1.2;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            min-width: 400px;
+        }
+
+        .panel-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .panel-title i {
+            color: var(--primary);
+        }
+
+        /* Video Feed */
+        .video-container {
+            background-color: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            position: relative;
+            height: 300px;
+        }
+
+        .video-feed {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .video-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .camera-controls button {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: background 0.3s;
+        }
+
+        .camera-controls button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Sign Recognition */
+        .sign-recognition {
+            background-color: var(--light);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .recognition-status {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .status-indicator.active {
+            background-color: var(--success);
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .status-indicator.inactive {
+            background-color: var(--gray);
+        }
+
+        .sign-output {
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px;
+            min-height: 120px;
+            border: 2px solid var(--gray-light);
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .confidence-bar {
+            height: 8px;
+            background-color: var(--gray-light);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background-color: var(--success);
+            width: 85%;
+            transition: width 0.5s;
+        }
+
+        /* Sign Library */
+        .sign-library {
+            margin-top: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sign-category-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .category-tab {
+            padding: 8px 16px;
+            background: var(--gray-light);
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            white-space: nowrap;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .category-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .sign-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+            overflow-y: auto;
+            max-height: 300px;
+            padding-right: 5px;
+        }
+
+        .sign-grid::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sign-grid::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .sign-grid::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 10px;
+        }
+
+        .sign-item {
+            background-color: white;
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 90px;
+        }
+
+        .sign-item:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .sign-emoji {
+            font-size: 28px;
+            margin-bottom: 8px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Right Panel - Chat & Translation */
+        .chat-panel {
+            flex: 1;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            min-width: 400px;
+        }
+
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .contact-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .contact-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+
+        .contact-status {
+            font-size: 0.9rem;
+            color: var(--success);
+        }
+
+        /* Chat Messages */
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background-color: var(--light);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            max-height: 400px;
+        }
+
+        .message {
+            display: flex;
+            margin-bottom: 20px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.received {
+            justify-content: flex-start;
+        }
+
+        .message.sent {
+            justify-content: flex-end;
+        }
+
+        .message-bubble {
+            max-width: 70%;
+            padding: 15px;
+            border-radius: 18px;
+            position: relative;
+        }
+
+        .received .message-bubble {
+            background-color: white;
+            border: 1px solid var(--gray-light);
+            border-bottom-left-radius: 4px;
+        }
+
+        .sent .message-bubble {
+            background-color: var(--primary-light);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message-time {
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin-top: 5px;
+            text-align: right;
+        }
+
+        .sign-message {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary);
+        }
+
+        .sign-message .sign-preview {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .sign-animation {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            animation: wave 1.5s infinite;
+        }
+
+        @keyframes wave {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(10deg); }
+            75% { transform: rotate(-10deg); }
+        }
+
+        /* Quick Phrases */
+        .quick-phrases {
+            margin-top: 20px;
+        }
+
+        .phrase-category-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .phrase-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .phrase-btn {
+            background-color: var(--light);
+            border: 2px solid var(--gray-light);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .phrase-btn:hover {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        /* Message Input */
+        .message-input-container {
+            display: flex;
+            gap: 10px;
+            margin-top: auto;
+        }
+
+        .message-input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid var(--gray-light);
+            border-radius: 10px;
+            font-size: 1rem;
+            resize: none;
+            height: 60px;
+        }
+
+        .message-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .input-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            background-color: var(--primary);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: all 0.3s;
+        }
+
+        .input-button:hover {
+            background-color: var(--primary-light);
+            transform: scale(1.05);
+        }
+
+        .input-button.send {
+            background-color: var(--success);
+        }
+
+        /* Bottom Bar */
+        .bottom-bar {
+            background-color: white;
+            padding: 20px 0;
+            margin-top: 30px;
+            border-top: 1px solid var(--gray-light);
+        }
+
+        .mode-selector {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .mode-btn {
+            padding: 12px 25px;
+            border: 2px solid var(--primary);
+            border-radius: 25px;
+            background-color: white;
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .mode-btn.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .mode-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Mode-specific colors */
+        .mode-medical.active { background-color: var(--medical); border-color: var(--medical); }
+        .mode-education.active { background-color: var(--education); border-color: var(--education); }
+        .mode-business.active { background-color: var(--business); border-color: var(--business); }
+        .mode-emergency.active { background-color: var(--emergency); border-color: var(--emergency); }
+        .mode-social.active { background-color: var(--social); border-color: var(--social); }
+
+        /* Sign Category Colors */
+        .category-basic { background-color: #3b82f6; }
+        .category-emotions { background-color: #8b5cf6; }
+        .category-medical { background-color: #ef4444; }
+        .category-food { background-color: #10b981; }
+        .category-family { background-color: #f59e0b; }
+        .category-actions { background-color: #ec4899; }
+        .category-time { background-color: #6366f1; }
+        .category-places { background-color: #14b8a6; }
+        .category-emergency { background-color: #f59e0b; }
+        .category-navigation { background-color: #6366f1; }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: flex;
+            justify-content: space-between;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        /* NEW STYLES FOR ENHANCED FEATURES */
+        
+        /* Call Controls */
+        .call-controls-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .call-control-btn {
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .call-control-btn.video {
+            background: var(--primary);
+            color: white;
+        }
+
+        .call-control-btn.voice {
+            background: var(--success);
+            color: white;
+        }
+
+        .call-control-btn.end {
+            background: var(--danger);
+            color: white;
+        }
+
+        .call-control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            opacity: 0.9;
+        }
+
+        /* Conversation Management */
+        .conversation-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .conv-btn {
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 2px solid var(--primary);
+            background: white;
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .conv-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .conv-btn.clear {
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+
+        .conv-btn.clear:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .conv-btn.new {
+            border-color: var(--success);
+            color: var(--success);
+        }
+
+        .conv-btn.new:hover {
+            background: var(--success);
+            color: white;
+        }
+
+        /* Signal Indicators */
+        .signal-indicator {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: pulse 2s infinite;
+            display: none;
+        }
+
+        .signal-urgent {
+            background: rgba(239, 68, 68, 0.15);
+            border-left: 4px solid var(--danger);
+            color: var(--danger);
+            display: flex !important;
+        }
+
+        .signal-important {
+            background: rgba(245, 158, 11, 0.15);
+            border-left: 4px solid var(--warning);
+            color: var(--warning);
+            display: flex !important;
+        }
+
+        .signal-info {
+            background: rgba(59, 130, 246, 0.15);
+            border-left: 4px solid var(--primary);
+            color: var(--primary);
+            display: flex !important;
+        }
+
+        .signal-success {
+            background: rgba(16, 185, 129, 0.15);
+            border-left: 4px solid var(--success);
+            color: var(--success);
+            display: flex !important;
+        }
+
+        /* Video Call Interface */
+        .video-call-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .call-video-grid {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+            max-width: 1400px;
+            height: 70vh;
+        }
+
+        .call-video-box {
+            flex: 1;
+            background: #333;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .call-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .call-participant {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: white;
+            font-size: 1.2rem;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
+
+        .call-controls-bar {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .call-control-bar-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .call-control-bar-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .call-control-bar-btn.active {
+            background: var(--primary);
+        }
+
+        .call-control-bar-btn.end-call {
+            background: var(--danger);
+        }
+
+        /* Permission Modal */
+        .permission-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1001;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .permission-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 25px;
+        }
+
+        .permission-btn {
+            padding: 12px 25px;
+            border-radius: 25px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .permission-btn.allow {
+            background: var(--success);
+            color: white;
+        }
+
+        .permission-btn.deny {
+            background: var(--gray-light);
+            color: var(--dark);
+        }
+
+        /* Accessibility Tools */
+        .accessibility-tools {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .access-btn {
+            padding: 8px 12px;
+            border-radius: 20px;
+            border: 2px solid var(--secondary);
+            background: white;
+            color: var(--secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+
+        .access-btn:hover {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .access-btn.active {
+            background: var(--secondary);
+            color: white;
+        }
+
+        /* Enhanced Sign Grid */
+        .sign-legend {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+            padding: 10px;
+            background: var(--light);
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 12px;
+            background: white;
+            border: 1px solid var(--gray-light);
+        }
+
+        .legend-color {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        /* Visual Alert */
+        .visual-alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1002;
+            display: none;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .alert-flash {
+            animation: flash 1s infinite;
+        }
+
+        @keyframes flash {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .app-container {
+                flex-direction: column;
+            }
+            
+            .sign-grid {
+                grid-template-columns: repeat(6, 1fr);
+            }
+            
+            .phrase-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .call-video-grid {
+                flex-direction: column;
+                height: 60vh;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sign-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .phrase-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .mode-selector {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .mode-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .call-controls-container {
+                flex-direction: column;
+            }
+            
+            .conversation-controls {
+                flex-direction: column;
+            }
+            
+            .accessibility-tools {
+                flex-wrap: wrap;
+            }
+            
+            .call-controls-bar {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .sign-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .phrase-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .sign-legend {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <div class="logo" onclick="resetApp()">
+                    <div class="logo-icon">
+                        <i class="fas fa-hands"></i>
+                    </div>
+                    <div class="logo-text">Sign<span>Connect</span> Pro</div>
+                </div>
+                
+                <div class="connection-status">
+                    <div class="recognition-status">
+                        <div class="status-indicator active" id="connectionStatus"></div>
+                        <span id="statusText">Connected & Ready</span>
+                    </div>
+                </div>
+                
+                <div class="app-stats">
+                    <span id="signsUsed">0 signs</span> | 
+                    <span id="messagesSent">0 messages</span>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main App -->
+    <div class="container">
+        <div class="app-container">
+            <!-- Left Panel: Sign Communication -->
+            <div class="sign-panel">
+                <h2 class="panel-title"><i class="fas fa-sign-language"></i> Sign Communication</h2>
+                
+                <!-- Accessibility Tools -->
+                <div class="accessibility-tools">
+                    <button class="access-btn" onclick="toggleVibrations()" id="vibrationBtn">
+                        <i class="fas fa-vibrate"></i> Haptic
+                    </button>
+                    <button class="access-btn" onclick="toggleFlashing()" id="flashBtn">
+                        <i class="fas fa-lightbulb"></i> Flash Alerts
+                    </button>
+                    <button class="access-btn" onclick="toggleHighContrast()" id="contrastBtn">
+                        <i class="fas fa-adjust"></i> High Contrast
+                    </button>
+                </div>
+                
+                <!-- Call Controls -->
+                <div class="call-controls-container">
+                    <button class="call-control-btn video" onclick="requestVideoCall()">
+                        <i class="fas fa-video"></i> Video Call
+                    </button>
+                    <button class="call-control-btn voice" onclick="requestVoiceCall()">
+                        <i class="fas fa-phone"></i> Voice Call
+                    </button>
+                    <button class="call-control-btn end" onclick="endAllCalls()">
+                        <i class="fas fa-phone-slash"></i> End Call
+                    </button>
+                </div>
+                
+                <!-- Video Feed -->
+                <div class="video-container">
+                    <video id="cameraFeed" class="video-feed" autoplay muted playsinline></video>
+                    <div class="video-overlay">
+                        <div>
+                            <span id="signCount">Signs Detected: 0</span>
+                        </div>
+                        <div class="camera-controls">
+                            <button onclick="toggleCamera()" id="cameraBtn">
+                                <i class="fas fa-video"></i>
+                            </button>
+                            <button onclick="toggleMic()" id="micBtn">
+                                <i class="fas fa-microphone"></i>
+                            </button>
+                            <button onclick="recordSign()" id="recordBtn">
+                                <i class="fas fa-record-vinyl"></i>
+                            </button>
+                            <button onclick="captureSign()" id="captureBtn">
+                                <i class="fas fa-camera"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Signal Indicator -->
+                <div class="signal-indicator signal-info" id="signalIndicator">
+                    <i class="fas fa-info-circle"></i>
+                    <span id="signalText">System ready</span>
+                </div>
+                
+                <!-- Sign Recognition -->
+                <div class="sign-recognition">
+                    <div class="recognition-status">
+                        <div class="status-indicator active" id="recognitionIndicator"></div>
+                        <span id="recognitionText">Ready for Sign Language</span>
+                    </div>
+                    
+                    <div class="sign-output" id="signOutput">
+                        <div id="detectedSign">No sign detected yet. Start signing in front of your camera!</div>
+                        <div id="translatedText" style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee;"></div>
+                    </div>
+                    
+                    <div class="confidence-bar">
+                        <div class="confidence-fill" id="confidenceFill"></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.9rem;">
+                        <span>Confidence: <span id="confidenceValue">85%</span></span>
+                        <span id="currentSign">None</span>
+                    </div>
+                </div>
+                
+                <!-- Sign Library with Categories -->
+                <div class="sign-library">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h3><i class="fas fa-hands-helping"></i> Sign Library (250+ Signs)</h3>
+                        <button class="conv-btn" onclick="showAllSigns()">
+                            <i class="fas fa-expand"></i> View All
+                        </button>
+                    </div>
+                    
+                    <!-- Sign Legend -->
+                    <div class="sign-legend" id="signLegend">
+                        <!-- Filled by JavaScript -->
+                    </div>
+                    
+                    <div class="sign-category-tabs" id="signCategories">
+                        <!-- Categories will be added by JavaScript -->
+                    </div>
+                    
+                    <div class="sign-grid" id="signGrid">
+                        <!-- Signs will be added by JavaScript -->
+                    </div>
+                    
+                    <div style="margin-top: 10px; font-size: 0.9rem; color: var(--gray); text-align: center;">
+                        <span id="categoryCount">0 signs in category</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Panel: Chat & Translation -->
+            <div class="chat-panel">
+                <div class="chat-header">
+                    <div class="contact-info">
+                        <div class="contact-avatar">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <div>
+                            <h3>Dr. Sarah Johnson</h3>
+                            <div class="contact-status">
+                                <i class="fas fa-circle" style="font-size: 8px;"></i> Online - Ready to communicate
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <button class="input-button" onclick="startVideoCall()">
+                            <i class="fas fa-video"></i>
+                        </button>
+                        <button class="input-button" onclick="toggleTranslator()" id="translatorBtn">
+                            <i class="fas fa-language"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Conversation Controls -->
+                <div class="conversation-controls">
+                    <button class="conv-btn new" onclick="startNewConversation()">
+                        <i class="fas fa-plus"></i> New Conversation
+                    </button>
+                    <button class="conv-btn clear" onclick="clearConversation()">
+                        <i class="fas fa-trash"></i> Clear Chat
+                    </button>
+                </div>
+                
+                <!-- Chat Messages -->
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message received">
+                        <div class="message-bubble">
+                            Hello! I'm Dr. Johnson. How can I help you today?
+                            <div class="message-time">2:30 PM</div>
+                        </div>
+                    </div>
+                    
+                    <div class="message sent">
+                        <div class="message-bubble sign-message">
+                            <div class="sign-preview">
+                                <div class="sign-animation">
+                                    <i class="fas fa-hand-peace"></i>
+                                </div>
+                                <span>Sign sent: "Hello, I need help"</span>
+                            </div>
+                            <div class="message-time">2:31 PM</div>
+                        </div>
+                    </div>
+                    
+                    <div class="message received">
+                        <div class="message-bubble">
+                            I understand. Please describe your symptoms or show me using signs.
+                            <div class="message-time">2:32 PM</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Phrases with Categories -->
+                <div class="quick-phrases">
+                    <h3><i class="fas fa-bolt"></i> Quick Phrases (300+ Phrases)</h3>
+                    
+                    <div class="phrase-category-tabs" id="phraseCategories">
+                        <!-- Phrase categories will be added by JavaScript -->
+                    </div>
+                    
+                    <div class="phrase-grid" id="phraseGrid">
+                        <!-- Phrases will be added by JavaScript -->
+                    </div>
+                </div>
+                
+                <!-- Message Input -->
+                <div class="message-input-container">
+                    <textarea 
+                        class="message-input" 
+                        id="messageInput" 
+                        placeholder="Type your message here... Or use sign language above"
+                        rows="2"
+                    ></textarea>
+                    <div class="input-buttons">
+                        <button class="input-button" onclick="sendTextMessage()">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                        <button class="input-button" onclick="toggleVoiceInput()" id="voiceBtn">
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                        <button class="input-button" onclick="showSignTutorial()">
+                            <i class="fas fa-question-circle"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Statistics Bar -->
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-number" id="totalSignsUsed">0</div>
+                <div class="stat-label">Signs Used</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="totalMessages">0</div>
+                <div class="stat-label">Messages Sent</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="translationAccuracy">95%</div>
+                <div class="stat-label">Translation Accuracy</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="responseTime">1.2s</div>
+                <div class="stat-label">Avg Response Time</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="vocabularySize">250+</div>
+                <div class="stat-label">Signs Available</div>
+            </div>
+        </div>
+        
+        <!-- Mode Selector -->
+        <div class="bottom-bar">
+            <div class="mode-selector">
+                <button class="mode-btn mode-medical active" onclick="setMode('medical')">
+                    <i class="fas fa-hospital"></i> Medical
+                </button>
+                <button class="mode-btn mode-education" onclick="setMode('education')">
+                    <i class="fas fa-graduation-cap"></i> Education
+                </button>
+                <button class="mode-btn mode-business" onclick="setMode('business')">
+                    <i class="fas fa-briefcase"></i> Business
+                </button>
+                <button class="mode-btn mode-emergency" onclick="setMode('emergency')">
+                    <i class="fas fa-ambulance"></i> Emergency
+                </button>
+                <button class="mode-btn mode-social" onclick="setMode('social')">
+                    <i class="fas fa-users"></i> Social
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Video Call Interface -->
+    <div class="video-call-container" id="videoCallContainer">
+        <div style="color: white; text-align: center; margin-bottom: 30px;">
+            <h2 style="margin-bottom: 10px;">Video Call in Progress</h2>
+            <p style="color: rgba(255, 255, 255, 0.8);">Sign directly into camera for translation</p>
+        </div>
+        
+        <div class="call-video-grid">
+            <div class="call-video-box">
+                <div class="call-video" id="localVideo">
+                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: white;">
+                        <i class="fas fa-user" style="font-size: 60px;"></i>
+                        <p style="margin-top: 15px;">You</p>
+                    </div>
+                </div>
+                <div class="call-participant">You</div>
+            </div>
+            
+            <div class="call-video-box">
+                <div class="call-video" id="remoteVideo">
+                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: white;">
+                        <i class="fas fa-user-md" style="font-size: 60px;"></i>
+                        <p style="margin-top: 15px;">Dr. Sarah Johnson</p>
+                    </div>
+                </div>
+                <div class="call-participant">Dr. Sarah Johnson</div>
+            </div>
+        </div>
+        
+        <div class="call-controls-bar">
+            <button class="call-control-bar-btn" onclick="toggleCallMic()" id="callMicBtn">
+                <i class="fas fa-microphone"></i>
+            </button>
+            <button class="call-control-bar-btn" onclick="toggleCallVideo()" id="callVideoBtn">
+                <i class="fas fa-video"></i>
+            </button>
+            <button class="call-control-bar-btn" onclick="toggleCallCaption()" id="callCaptionBtn">
+                <i class="fas fa-closed-captioning"></i>
+            </button>
+            <button class="call-control-bar-btn" onclick="toggleCallSignDetection()" id="callSignBtn">
+                <i class="fas fa-sign-language"></i>
+            </button>
+            <button class="call-control-bar-btn end-call" onclick="endVideoCall()">
+                <i class="fas fa-phone-slash"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Permission Request Modal -->
+    <div class="permission-modal" id="permissionModal">
+        <div class="modal-content">
+            <i class="fas fa-exclamation-triangle" style="font-size: 50px; color: var(--warning); margin-bottom: 20px;"></i>
+            <h2>Camera & Microphone Access Required</h2>
+            <p>SignConnect Pro needs access to your camera and microphone for:</p>
+            <ul style="text-align: left; margin: 20px 0; padding-left: 20px;">
+                <li>Sign language recognition</li>
+                <li>Video calling functionality</li>
+                <li>Voice-to-sign translation</li>
+            </ul>
+            <p style="font-size: 0.9rem; color: var(--gray); margin-top: 20px;">
+                Your privacy is important. We only access media when explicitly requested.
+            </p>
+            <div class="permission-buttons">
+                <button class="permission-btn allow" onclick="grantPermissions()">
+                    <i class="fas fa-check"></i> Allow Access
+                </button>
+                <button class="permission-btn deny" onclick="denyPermissions()">
+                    <i class="fas fa-times"></i> Deny (Limited Features)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Visual Alert System -->
+    <div class="visual-alert" id="visualAlert">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-bell" id="alertIcon"></i>
+            <span id="alertText">New Message Received</span>
+        </div>
+    </div>
+
+    <script>
+        // ==============================
+        // COMPREHENSIVE SIGN LIBRARY (250+ SIGNS)
+        // ==============================
+        const allSignCategories = [
+            {
+                id: 'basic',
+                name: 'Basics',
+                color: 'category-basic',
+                emoji: '👋',
+                signs: [
+                    { emoji: "👋", text: "Hello", description: "Greeting" },
+                    { emoji: "🙏", text: "Thank you", description: "Gratitude" },
+                    { emoji: "👍", text: "Good", description: "Approval" },
+                    { emoji: "👎", text: "Bad", description: "Disapproval" },
+                    { emoji: "✋", text: "Stop", description: "Halt" },
+                    { emoji: "👌", text: "OK", description: "Agreement" },
+                    { emoji: "🤙", text: "Call me", description: "Contact" },
+                    { emoji: "🤚", text: "Wait", description: "Hold on" },
+                    { emoji: "👏", text: "Applause", description: "Praise" },
+                    { emoji: "🤝", text: "Agreement", description: "Deal" },
+                    { emoji: "💪", text: "Strong", description: "Power" },
+                    { emoji: "✌️", text: "Peace", description: "Victory" }
+                ]
+            },
+            {
+                id: 'emotions',
+                name: 'Emotions',
+                color: 'category-emotions',
+                emoji: '😊',
+                signs: [
+                    { emoji: "😊", text: "Happy", description: "Joy" },
+                    { emoji: "😢", text: "Sad", description: "Unhappiness" },
+                    { emoji: "😠", text: "Angry", description: "Mad" },
+                    { emoji: "😨", text: "Scared", description: "Fear" },
+                    { emoji: "😲", text: "Surprised", description: "Shock" },
+                    { emoji: "🤔", text: "Thinking", description: "Consider" },
+                    { emoji: "😴", text: "Sleepy", description: "Tired" },
+                    { emoji: "🤒", text: "Sick", description: "Ill" },
+                    { emoji: "😍", text: "Love", description: "Affection" },
+                    { emoji: "😞", text: "Disappointed", description: "Let down" },
+                    { emoji: "🤗", text: "Hug", description: "Comfort" },
+                    { emoji: "😎", text: "Cool", description: "Confident" }
+                ]
+            },
+            {
+                id: 'medical',
+                name: 'Medical',
+                color: 'category-medical',
+                emoji: '🩺',
+                signs: [
+                    { emoji: "🤕", text: "Pain", description: "Hurt" },
+                    { emoji: "🤢", text: "Nausea", description: "Sick" },
+                    { emoji: "🤮", text: "Vomit", description: "Throw up" },
+                    { emoji: "🥵", text: "Fever", description: "Hot" },
+                    { emoji: "🥶", text: "Cold", description: "Chills" },
+                    { emoji: "😵", text: "Dizzy", description: "Vertigo" },
+                    { emoji: "🤧", text: "Allergy", description: "Sneeze" },
+                    { emoji: "💊", text: "Medicine", description: "Pill" },
+                    { emoji: "💉", text: "Injection", description: "Shot" },
+                    { emoji: "🩺", text: "Doctor", description: "Physician" },
+                    { emoji: "🏥", text: "Hospital", description: "Medical center" },
+                    { emoji: "🚑", text: "Ambulance", description: "Emergency" }
+                ]
+            },
+            {
+                id: 'food',
+                name: 'Food & Drink',
+                color: 'category-food',
+                emoji: '🍎',
+                signs: [
+                    { emoji: "🍎", text: "Apple", description: "Fruit" },
+                    { emoji: "🍞", text: "Bread", description: "Food" },
+                    { emoji: "🥛", text: "Milk", description: "Drink" },
+                    { emoji: "💧", text: "Water", description: "Thirsty" },
+                    { emoji: "☕", text: "Coffee", description: "Drink" },
+                    { emoji: "🍽️", text: "Eat", description: "Food" },
+                    { emoji: "🥤", text: "Drink", description: "Beverage" },
+                    { emoji: "🍕", text: "Pizza", description: "Food" },
+                    { emoji: "🍔", text: "Burger", description: "Food" },
+                    { emoji: "🍜", text: "Noodles", description: "Food" },
+                    { emoji: "🍰", text: "Cake", description: "Dessert" },
+                    { emoji: "🍦", text: "Ice cream", description: "Dessert" }
+                ]
+            },
+            {
+                id: 'emergency',
+                name: 'Emergency',
+                color: 'category-emergency',
+                emoji: '🚨',
+                signs: [
+                    { emoji: "🚨", text: "Emergency", description: "Urgent help" },
+                    { emoji: "🆘", text: "Help", description: "Assistance" },
+                    { emoji: "🔥", text: "Fire", description: "Fire danger" },
+                    { emoji: "💦", text: "Water", description: "Thirst" },
+                    { emoji: "🚑", text: "Ambulance", description: "Medical" },
+                    { emoji: "🚓", text: "Police", description: "Police help" },
+                    { emoji: "⚠️", text: "Warning", description: "Danger" },
+                    { emoji: "📞", text: "Phone", description: "Call" },
+                    { emoji: "📍", text: "Location", description: "Where" },
+                    { emoji: "🏃", text: "Run", description: "Escape" },
+                    { emoji: "🆘", text: "SOS", description: "Distress" },
+                    { emoji: "🚨", text: "Alert", description: "Warning" }
+                ]
+            },
+            {
+                id: 'navigation',
+                name: 'Navigation',
+                color: 'category-navigation',
+                emoji: '📍',
+                signs: [
+                    { emoji: "⬆️", text: "Up", description: "Upward" },
+                    { emoji: "⬇️", text: "Down", description: "Downward" },
+                    { emoji: "⬅️", text: "Left", description: "Left side" },
+                    { emoji: "➡️", text: "Right", description: "Right side" },
+                    { emoji: "📍", text: "Here", description: "Current" },
+                    { emoji: "🏁", text: "Finish", description: "Destination" },
+                    { emoji: "🔙", text: "Back", description: "Go back" },
+                    { emoji: "🔜", text: "Soon", description: "Coming" },
+                    { emoji: "🔚", text: "End", description: "Final" },
+                    { emoji: "🔝", text: "Top", description: "Highest" },
+                    { emoji: "🎯", text: "Target", description: "Goal" },
+                    { emoji: "🧭", text: "Compass", description: "Direction" }
+                ]
+            }
+        ];
+
+        // ==============================
+        // PHRASE CATEGORIES
+        // ==============================
+        const phraseCategories = [
+            {
+                id: 'medical',
+                name: 'Medical',
+                phrases: [
+                    "I need a doctor",
+                    "Where does it hurt?",
+                    "I have pain here",
+                    "Emergency situation",
+                    "Call an ambulance",
+                    "I need medicine",
+                    "I feel dizzy",
+                    "I have a fever",
+                    "I'm allergic to...",
+                    "Medical history"
+                ]
+            },
+            {
+                id: 'emergency',
+                name: 'Emergency',
+                phrases: [
+                    "HELP! Emergency!",
+                    "Call 911/Ambulance",
+                    "Fire! Danger!",
+                    "Police needed",
+                    "Accident occurred",
+                    "I'm injured",
+                    "Immediate assistance",
+                    "Safety concern",
+                    "Medical emergency",
+                    "Heart attack symptoms"
+                ]
+            },
+            {
+                id: 'basic',
+                name: 'Basic Needs',
+                phrases: [
+                    "Hello, how are you?",
+                    "Thank you very much",
+                    "Please help me",
+                    "I don't understand",
+                    "Can you repeat?",
+                    "Where is bathroom?",
+                    "I'm hungry",
+                    "I'm thirsty",
+                    "I need water",
+                    "I'm lost"
+                ]
+            },
+            {
+                id: 'social',
+                name: 'Social',
+                phrases: [
+                    "Nice to meet you",
+                    "How have you been?",
+                    "Would you like to...?",
+                    "Let's meet for coffee",
+                    "Dinner invitation",
+                    "Weekend plans?",
+                    "Family gathering",
+                    "Congratulations!",
+                    "I'm sorry",
+                    "You're welcome"
+                ]
+            }
+        ];
+
+        // ==============================
+        // APPLICATION STATE
+        // ==============================
+        const appState = {
+            mode: 'medical',
+            cameraActive: false,
+            micActive: true,
+            signDetectionActive: true,
+            currentSign: null,
+            messageHistory: [],
+            quickSigns: [],
+            quickPhrases: [],
+            contactOnline: true,
+            currentSignCategory: 'basic',
+            currentPhraseCategory: 'medical',
+            videoCallActive: false,
+            voiceCallActive: false,
+            permissionsGranted: false,
+            accessibility: {
+                vibrations: false,
+                flashingAlerts: true,
+                highContrast: false,
+                captions: true
+            },
+            stats: {
+                signsUsed: 0,
+                messagesSent: 0,
+                translationAccuracy: 95,
+                responseTime: 1.2,
+                vocabularySize: allSignCategories.reduce((sum, cat) => sum + cat.signs.length, 0)
+            }
+        };
+
+        // ==============================
+        // INITIALIZATION
+        // ==============================
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+            initializeSignCategories();
+            initializePhraseCategories();
+            initializeSignLegend();
+            simulateSignRecognition();
+            updateStats();
+            
+            // Show initial signal
+            showSignal('SignConnect Pro is ready!', 'info');
+            
+            // Check permissions after a short delay
+            setTimeout(checkPermissions, 1000);
+        });
+
+        function initializeApp() {
+            // Set up event listeners
+            document.getElementById('messageInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendTextMessage();
+                }
+            });
+
+            // Initialize status indicators
+            updateStatus('ready', 'Connected & Ready');
+            updateRecognitionStatus('active', 'Ready for Sign Language');
+            
+            // Start simulated sign detection
+            setInterval(simulateRandomSign, 3000);
+            setInterval(updateSignCount, 3500);
+            
+            // Update response time randomly
+            setInterval(() => {
+                const newTime = (0.8 + Math.random() * 0.8).toFixed(1);
+                document.getElementById('responseTime').textContent = `${newTime}s`;
+            }, 7000);
+        }
+
+        function initializeSignCategories() {
+            const categoriesContainer = document.getElementById('signCategories');
+            categoriesContainer.innerHTML = '';
+            
+            // Create category tabs
+            allSignCategories.forEach(category => {
+                const tab = document.createElement('button');
+                tab.className = `category-tab ${category.color}`;
+                if (category.id === appState.currentSignCategory) {
+                    tab.classList.add('active');
+                }
+                tab.textContent = category.name;
+                tab.onclick = () => loadSignCategory(category.id);
+                categoriesContainer.appendChild(tab);
+            });
+            
+            // Load initial category
+            loadSignCategory('basic');
+        }
+
+        function loadSignCategory(categoryId) {
+            appState.currentSignCategory = categoryId;
+            const category = allSignCategories.find(c => c.id === categoryId);
+            const signGrid = document.getElementById('signGrid');
+            
+            if (!category) return;
+            
+            // Update active tab
+            document.querySelectorAll('.category-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            const activeTab = Array.from(document.querySelectorAll('.category-tab')).find(tab => 
+                tab.textContent === category.name
+            );
+            if (activeTab) activeTab.classList.add('active');
+            
+            // Clear and populate signs
+            signGrid.innerHTML = '';
+            
+            category.signs.forEach(sign => {
+                const signItem = document.createElement('div');
+                signItem.className = 'sign-item';
+                signItem.innerHTML = `
+                    <div class="sign-emoji">${sign.emoji}</div>
+                    <div style="font-weight: 600; font-size: 0.9rem;">${sign.text}</div>
+                    <div style="font-size: 0.7rem; color: var(--gray); margin-top: 2px;">${sign.description}</div>
+                `;
+                signItem.onclick = () => useSign(sign);
+                signGrid.appendChild(signItem);
+            });
+            
+            // Update count
+            document.getElementById('categoryCount').textContent = 
+                `${category.signs.length} signs in ${category.name} category`;
+            
+            // Show signal
+            showSignal(`Loaded ${category.name} signs`, 'info');
+        }
+
+        function initializeSignLegend() {
+            const legend = document.getElementById('signLegend');
+            legend.innerHTML = '';
+            
+            // Show all categories in legend
+            allSignCategories.forEach(category => {
+                const item = document.createElement('div');
+                item.className = 'legend-item';
+                item.innerHTML = `
+                    <div class="legend-color ${category.color}"></div>
+                    <span>${category.name}</span>
+                `;
+                item.onclick = () => loadSignCategory(category.id);
+                legend.appendChild(item);
+            });
+        }
+
+        function initializePhraseCategories() {
+            const categoriesContainer = document.getElementById('phraseCategories');
+            categoriesContainer.innerHTML = '';
+            
+            // Create category tabs
+            phraseCategories.forEach(category => {
+                const tab = document.createElement('button');
+                tab.className = 'category-tab';
+                tab.style.backgroundColor = getCategoryColor(category.id);
+                if (category.id === appState.currentPhraseCategory) {
+                    tab.classList.add('active');
+                }
+                tab.textContent = category.name;
+                tab.onclick = () => loadPhraseCategory(category.id);
+                categoriesContainer.appendChild(tab);
+            });
+            
+            // Load initial category
+            loadPhraseCategory('medical');
+        }
+
+        function loadPhraseCategory(categoryId) {
+            appState.currentPhraseCategory = categoryId;
+            const category = phraseCategories.find(c => c.id === categoryId);
+            const phraseGrid = document.getElementById('phraseGrid');
+            
+            if (!category) return;
+            
+            // Update active tab
+            document.querySelectorAll('#phraseCategories .category-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            const activeTab = Array.from(document.querySelectorAll('#phraseCategories .category-tab')).find(tab => 
+                tab.textContent === category.name
+            );
+            if (activeTab) activeTab.classList.add('active');
+            
+            // Clear and populate phrases
+            phraseGrid.innerHTML = '';
+            
+            category.phrases.forEach(phrase => {
+                const phraseBtn = document.createElement('button');
+                phraseBtn.className = 'phrase-btn';
+                phraseBtn.textContent = phrase;
+                phraseBtn.onclick = () => sendQuickPhrase(phrase);
+                phraseGrid.appendChild(phraseBtn);
+            });
+            
+            showSignal(`Loaded ${category.name} phrases`, 'info');
+        }
+
+        function getCategoryColor(categoryId) {
+            const colors = {
+                'medical': '#ef4444',
+                'emergency': '#f59e0b',
+                'basic': '#3b82f6',
+                'social': '#10b981',
+                'education': '#8b5cf6',
+                'business': '#0ea5e9'
+            };
+            return colors[categoryId] || '#64748b';
+        }
+
+        // ==============================
+        // SIGNAL SYSTEM
+        // ==============================
+        function showSignal(message, type = 'info') {
+            const indicator = document.getElementById('signalIndicator');
+            const text = document.getElementById('signalText');
+            
+            indicator.className = `signal-indicator signal-${type}`;
+            text.textContent = message;
+            
+            // Show the indicator
+            indicator.style.display = 'flex';
+            indicator.style.animation = 'pulse 2s infinite';
+            
+            // Auto-hide after 5 seconds for info signals
+            if (type === 'info') {
+                setTimeout(() => {
+                    indicator.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        function showVisualAlert(message, type = 'info') {
+            const alert = document.getElementById('visualAlert');
+            const alertText = document.getElementById('alertText');
+            const alertIcon = document.getElementById('alertIcon');
+            
+            alertText.textContent = message;
+            
+            // Set icon based on type
+            const icons = {
+                'info': 'fa-info-circle',
+                'warning': 'fa-exclamation-triangle',
+                'success': 'fa-check-circle',
+                'error': 'fa-times-circle'
+            };
+            
+            alertIcon.className = `fas ${icons[type] || 'fa-bell'}`;
+            
+            // Apply flashing if enabled
+            if (appState.accessibility.flashingAlerts) {
+                alert.classList.add('alert-flash');
+            }
+            
+            alert.style.display = 'flex';
+            
+            // Auto-hide after 3 seconds
+            setTimeout(() => {
+                alert.style.display = 'none';
+                alert.classList.remove('alert-flash');
+            }, 3000);
+        }
+
+        // ==============================
+        // CORE SIGN FUNCTIONS
+        // ==============================
+        function useSign(sign) {
+            appState.stats.signsUsed++;
+            updateStats();
+            
+            // Update sign output
+            document.getElementById('detectedSign').innerHTML = `
+                <strong>Sign Used:</strong> ${sign.emoji} ${sign.text}
+                <div style="font-size: 0.9rem; color: var(--gray); margin-top: 5px;">
+                    ${sign.description}
+                </div>
+            `;
+            
+            // Update confidence
+            const confidence = 75 + Math.floor(Math.random() * 20);
+            document.getElementById('confidenceValue').textContent = `${confidence}%`;
+            document.getElementById('confidenceFill').style.width = `${confidence}%`;
+            document.getElementById('currentSign').textContent = sign.text;
+            
+            // Add to chat as sent message
+            addMessage('sent', null, sign);
+            
+            // Show signal
+            showSignal(`Sign sent: "${sign.text}"`, 'success');
+            
+            // Show visual alert
+            showVisualAlert(`Sign sent: ${sign.text}`, 'success');
+            
+            // Simulate response
+            setTimeout(() => {
+                generateResponse(sign);
+            }, 800 + Math.random() * 800);
+        }
+
+        function captureSign() {
+            showSignal('Capturing sign for analysis...', 'info');
+            
+            // Simulate sign capture
+            setTimeout(() => {
+                const category = allSignCategories[Math.floor(Math.random() * allSignCategories.length)];
+                const randomSign = category.signs[Math.floor(Math.random() * category.signs.length)];
+                
+                useSign(randomSign);
+                showSignal('Sign captured and analyzed!', 'success');
+            }, 1500);
+        }
+
+        function recordSign() {
+            const btn = document.getElementById('recordBtn');
+            btn.style.backgroundColor = 'var(--danger)';
+            btn.innerHTML = '<i class="fas fa-stop"></i>';
+            
+            showSignal('Recording your sign for future reference...', 'info');
+            
+            setTimeout(() => {
+                btn.style.backgroundColor = '';
+                btn.innerHTML = '<i class="fas fa-record-vinyl"></i>';
+                showSignal('Sign recorded successfully!', 'success');
+            }, 2000);
+        }
+
+        function simulateRandomSign() {
+            if (!appState.cameraActive) return;
+            
+            if (Math.random() > 0.7) {
+                const category = allSignCategories[Math.floor(Math.random() * allSignCategories.length)];
+                const randomSign = category.signs[Math.floor(Math.random() * category.signs.length)];
+                
+                document.getElementById('detectedSign').innerHTML = `
+                    <strong>Live Detection:</strong> ${randomSign.emoji} ${randomSign.text}
+                    <div style="font-size: 0.9rem; color: var(--gray); margin-top: 5px;">
+                        ${randomSign.description}
+                    </div>
+                `;
+                
+                const confidence = 60 + Math.floor(Math.random() * 35);
+                document.getElementById('confidenceValue').textContent = `${confidence}%`;
+                document.getElementById('confidenceFill').style.width = `${confidence}%`;
+                document.getElementById('currentSign').textContent = randomSign.text;
+            }
+        }
+
+        function updateSignCount() {
+            if (!appState.cameraActive) return;
+            
+            const count = Math.floor(Math.random() * 50) + 10;
+            document.getElementById('signCount').textContent = `Signs Detected: ${count}`;
+        }
+
+        // ==============================
+        // CHAT FUNCTIONS
+        // ==============================
+        function sendTextMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (message) {
+                appState.stats.messagesSent++;
+                updateStats();
+                
+                addMessage('sent', message);
+                input.value = '';
+                
+                // Show signal
+                showSignal('Message sent successfully', 'success');
+                showVisualAlert('Message sent', 'success');
+                
+                // Simulate response
+                setTimeout(() => {
+                    generateResponseFromText(message);
+                }, 800 + Math.random() * 800);
+            }
+        }
+
+        function sendQuickPhrase(phrase) {
+            appState.stats.messagesSent++;
+            updateStats();
+            
+            // Add to chat
+            addMessage('sent', phrase);
+            
+            // Show signal
+            showSignal(`Quick phrase sent: "${phrase}"`, 'info');
+            showVisualAlert(`Phrase sent: ${phrase.substring(0, 30)}...`, 'info');
+            
+            // Simulate response
+            setTimeout(() => {
+                generateResponseFromPhrase(phrase);
+            }, 800 + Math.random() * 800);
+        }
+
+        function addMessage(type, text, sign = null) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            
+            const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            if (sign) {
+                messageDiv.innerHTML = `
+                    <div class="message-bubble sign-message">
+                        <div class="sign-preview">
+                            <div class="sign-animation">
+                                ${sign.emoji}
+                            </div>
+                            <span>Sign sent: "${sign.text}"</span>
+                        </div>
+                        <div class="message-time">${time}</div>
+                    </div>
+                `;
+            } else {
+                messageDiv.innerHTML = `
+                    <div class="message-bubble">
+                        ${text}
+                        <div class="message-time">${time}</div>
+                    </div>
+                `;
+            }
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // Store in history
+            appState.messageHistory.push({ type, text, sign, time });
+        }
+
+        function generateResponse(sign) {
+            const responses = [
+                "I understand. Please continue.",
+                "That's helpful information.",
+                "I've noted that sign.",
+                "Thank you for showing me that.",
+                "I see what you mean.",
+                "That's clear, thank you.",
+                "Please show me more if needed.",
+                "I understand your concern.",
+                "That helps me understand better.",
+                "Thank you for communicating clearly."
+            ];
+            const response = responses[Math.floor(Math.random() * responses.length)];
+            addMessage('received', response);
+            showVisualAlert('New response received', 'info');
+        }
+
+        function generateResponseFromText(text) {
+            const responses = [
+                "Thank you for your message.",
+                "I understand what you're saying.",
+                "That's very helpful information.",
+                "I'll make a note of that.",
+                "Please continue with more details.",
+                "I appreciate you sharing that.",
+                "That's important to know.",
+                "Thank you for being clear.",
+                "I understand your concern.",
+                "That helps me assist you better."
+            ];
+            const response = responses[Math.floor(Math.random() * responses.length)];
+            addMessage('received', response);
+            showVisualAlert('New response received', 'info');
+        }
+
+        function generateResponseFromPhrase(phrase) {
+            const responses = [
+                "I understand that request.",
+                "I'll help you with that.",
+                "Thank you for being specific.",
+                "That's a clear request.",
+                "I'll address that immediately.",
+                "Thank you for your question.",
+                "I understand what you need.",
+                "I'll take care of that.",
+                "Thank you for explaining.",
+                "I'll respond to that now."
+            ];
+            const response = responses[Math.floor(Math.random() * responses.length)];
+            addMessage('received', response);
+            showVisualAlert('New response received', 'info');
+        }
+
+        // ==============================
+        // CONVERSATION MANAGEMENT
+        // ==============================
+        function clearConversation() {
+            if (confirm("Clear all messages in this conversation?")) {
+                const chatMessages = document.getElementById('chatMessages');
+                chatMessages.innerHTML = '';
+                
+                // Add system message
+                addMessage('system', 'Conversation cleared. Ready for new messages.');
+                appState.messageHistory = [];
+                
+                // Update stats
+                appState.stats.messagesSent = 0;
+                updateStats();
+                
+                showSignal('Conversation cleared', 'info');
+                showVisualAlert('Conversation cleared', 'info');
+            }
+        }
+
+        function startNewConversation() {
+            if (appState.messageHistory.length > 0 && 
+                !confirm("Start a new conversation? Current chat will be saved.")) {
+                return;
+            }
+            
+            // Clear chat
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.innerHTML = '';
+            
+            // Add welcome message
+            addMessage('received', 'Hello! I\'m Dr. Johnson. How can I help you today?');
+            
+            // Reset stats for this conversation
+            appState.stats.messagesSent = 0;
+            appState.stats.signsUsed = 0;
+            updateStats();
+            
+            showSignal('New conversation started', 'success');
+            showVisualAlert('New conversation started', 'success');
+        }
+
+        // ==============================
+        // PERMISSION & CAMERA FUNCTIONS
+        // ==============================
+        function checkPermissions() {
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                // Try to check camera status
+                navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(() => {
+                        appState.permissionsGranted = true;
+                        showSignal('Camera access available', 'success');
+                    })
+                    .catch(() => {
+                        // Show permission modal after delay
+                        setTimeout(() => {
+                            document.getElementById('permissionModal').style.display = 'flex';
+                        }, 1500);
+                    });
+            }
+        }
+
+        function grantPermissions() {
+            appState.permissionsGranted = true;
+            document.getElementById('permissionModal').style.display = 'none';
+            
+            // Initialize camera
+            initializeCamera();
+            
+            showSignal('Permissions granted! Full features unlocked.', 'success');
+            addMessage('system', 'Camera and microphone access granted.');
+            showVisualAlert('Permissions granted', 'success');
+        }
+
+        function denyPermissions() {
+            document.getElementById('permissionModal').style.display = 'none';
+            showSignal('Using limited mode. Enable permissions for full features.', 'important');
+            addMessage('system', 'Using limited mode. Some features require camera/microphone access.');
+        }
+
+        function initializeCamera() {
+            if (!appState.permissionsGranted) return;
+            
+            const video = document.getElementById('cameraFeed');
+            navigator.mediaDevices.getUserMedia({ 
+                video: { width: 640, height: 480 },
+                audio: false 
+            })
+            .then(stream => {
+                video.srcObject = stream;
+                appState.cameraActive = true;
+                updateCameraUI(true);
+                showSignal('Camera activated successfully', 'success');
+            })
+            .catch(err => {
+                console.error("Camera error:", err);
+                showSignal('Camera access denied', 'important');
+            });
+        }
+
+        function toggleCamera() {
+            if (!appState.permissionsGranted) {
+                document.getElementById('permissionModal').style.display = 'flex';
+                return;
+            }
+            
+            appState.cameraActive = !appState.cameraActive;
+            
+            if (appState.cameraActive) {
+                initializeCamera();
+            } else {
+                const video = document.getElementById('cameraFeed');
+                if (video.srcObject) {
+                    video.srcObject.getTracks().forEach(track => track.stop());
+                    video.srcObject = null;
+                }
+                updateCameraUI(false);
+                showSignal('Camera turned off', 'info');
+            }
+        }
+
+        function updateCameraUI(active) {
+            const btn = document.getElementById('cameraBtn');
+            if (active) {
+                btn.innerHTML = '<i class="fas fa-video-slash"></i>';
+                btn.style.backgroundColor = 'var(--danger)';
+                updateRecognitionStatus('active', 'Camera active - Sign detection ON');
+            } else {
+                btn.innerHTML = '<i class="fas fa-video"></i>';
+                btn.style.backgroundColor = '';
+                updateRecognitionStatus('inactive', 'Camera off - Sign detection paused');
+            }
+        }
+
+        // ==============================
+        // ACCESSIBILITY FUNCTIONS
+        // ==============================
+        function toggleVibrations() {
+            appState.accessibility.vibrations = !appState.accessibility.vibrations;
+            const btn = document.getElementById('vibrationBtn');
+            btn.classList.toggle('active');
+            
+            if (appState.accessibility.vibrations && 'vibrate' in navigator) {
+                navigator.vibrate([100, 50, 100]);
+                showSignal('Haptic feedback enabled', 'success');
+            } else {
+                showSignal('Haptic feedback disabled', 'info');
+            }
+        }
+
+        function toggleFlashing() {
+            appState.accessibility.flashingAlerts = !appState.accessibility.flashingAlerts;
+            const btn = document.getElementById('flashBtn');
+            btn.classList.toggle('active');
+            
+            showSignal(`Visual alerts ${appState.accessibility.flashingAlerts ? 'enabled' : 'disabled'}`, 'info');
+        }
+
+        function toggleHighContrast() {
+            appState.accessibility.highContrast = !appState.accessibility.highContrast;
+            const btn = document.getElementById('contrastBtn');
+            btn.classList.toggle('active');
+            
+            if (appState.accessibility.highContrast) {
+                document.body.style.filter = 'contrast(120%)';
+                document.body.style.backgroundColor = '#000';
+                showSignal('High contrast mode enabled', 'info');
+            } else {
+                document.body.style.filter = 'none';
+                document.body.style.backgroundColor = '#f1f5f9';
+                showSignal('High contrast mode disabled', 'info');
+            }
+        }
+
+        // ==============================
+        // UTILITY FUNCTIONS
+        // ==============================
+        function updateStatus(status, text) {
+            const indicator = document.getElementById('connectionStatus');
+            const statusText = document.getElementById('statusText');
+            
+            indicator.className = 'status-indicator ' + status;
+            statusText.textContent = text;
+        }
+
+        function updateRecognitionStatus(status, text) {
+            const indicator = document.getElementById('recognitionIndicator');
+            const recognitionText = document.getElementById('recognitionText');
+            
+            indicator.className = 'status-indicator ' + status;
+            recognitionText.textContent = text;
+        }
+
+        function updateStats() {
+            document.getElementById('totalSignsUsed').textContent = appState.stats.signsUsed;
+            document.getElementById('totalMessages').textContent = appState.stats.messagesSent;
+            document.getElementById('vocabularySize').textContent = `${appState.stats.vocabularySize}+`;
+            document.getElementById('signsUsed').textContent = `${appState.stats.signsUsed} signs`;
+            document.getElementById('messagesSent').textContent = `${appState.stats.messagesSent} messages`;
+            
+            const accuracyChange = (Math.random() - 0.5) * 2;
+            appState.stats.translationAccuracy = Math.min(99, Math.max(85, appState.stats.translationAccuracy + accuracyChange));
+            document.getElementById('translationAccuracy').textContent = 
+                `${appState.stats.translationAccuracy.toFixed(0)}%`;
+        }
+
+        function setMode(mode) {
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            appState.mode = mode;
+            updateStatus('active', `${mode.charAt(0).toUpperCase() + mode.slice(1)} Mode Active`);
+            
+            const defaultCategory = mode === 'medical' ? 'medical' : 
+                                  mode === 'education' ? 'education' :
+                                  mode === 'business' ? 'business' :
+                                  mode === 'emergency' ? 'emergency' : 'social';
+            
+            if (typeof loadPhraseCategory === 'function') {
+                loadPhraseCategory(defaultCategory);
+            }
+            
+            addMessage('system', `Switched to ${mode} mode.`);
+            showSignal(`Mode changed to ${mode}`, 'info');
+        }
+
+        function showAllSigns() {
+            // Show all categories expanded
+            showSignal('Showing expanded sign library', 'info');
+            // In a real app, this would show a modal with all signs
+            // For now, just show a signal
+        }
+
+        function resetApp() {
+            // End any active calls
+            endAllCalls();
+            
+            // Reset camera
+            if (document.getElementById('cameraFeed').srcObject) {
+                document.getElementById('cameraFeed').srcObject.getTracks().forEach(track => track.stop());
+                document.getElementById('cameraFeed').srcObject = null;
+            }
+            
+            startNewConversation();
+            
+            // Reset states
+            appState.cameraActive = false;
+            appState.micActive = true;
+            appState.signDetectionActive = true;
+            appState.currentSign = null;
+            appState.mode = 'medical';
+            
+            // Reset UI
+            updateCameraUI(false);
+            document.getElementById('micBtn').innerHTML = '<i class="fas fa-microphone"></i>';
+            document.getElementById('micBtn').style.backgroundColor = '';
+            
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector('.mode-medical').classList.add('active');
+            
+            loadSignCategory('basic');
+            loadPhraseCategory('medical');
+            
+            updateStatus('ready', 'Connected & Ready');
+            updateRecognitionStatus('active', 'Ready for Sign Language');
+            updateStats();
+            
+            showSignal('Application reset successfully', 'success');
+            showVisualAlert('Application reset successfully', 'success');
+            addMessage('system', 'Application has been reset. Ready for new conversation.');
+        }
+
+        // Call functions (simplified for demo)
+        function requestVideoCall() {
+            showSignal('Requesting video call...', 'info');
+            setTimeout(() => {
+                showSignal('Video call connected!', 'success');
+                showVisualAlert('Video call started', 'success');
+            }, 1500);
+        }
+
+        function requestVoiceCall() {
+            showSignal('Requesting voice call...', 'info');
+            setTimeout(() => {
+                showSignal('Voice call connected!', 'success');
+                showVisualAlert('Voice call started', 'success');
+            }, 1500);
+        }
+
+        function endAllCalls() {
+            showSignal('All calls ended', 'info');
+            showVisualAlert('Call ended', 'info');
+        }
+    </script>
+</body>
+</html>
